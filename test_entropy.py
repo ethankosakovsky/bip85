@@ -84,7 +84,15 @@ def test_xprv_application():
     result = e.bip32_xprv_to_xprv(0, XPRV)
     assert result == 'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
 
+@pytest.mark.parametrize('index, width, expect', [
+        (0, 32, '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'),
+        (0, 64, '4fc6759ef9c0e12aed757ad874706a3955ef125c8f8eabb3909aeda028f5e285bf496a23265bac09f537f4cc5e1efa689f5625ded2cd996c042b2657263c6816'),
+        (1234, 64, 'e1a35aeae27cb3c93b0d437e94b64a891cdff9ac250537ec675d0e6a2680f1d2edf9927f4c5233b19b15fdea4063a8b62f85ff8666176d226741ed192075a8db'),
+    ])
+def test_hex_application(index, width, expect):
+    e = bipentropy.BIPEntropy()
+    assert e.bip32_xprv_to_hex(index, width, XPRV) == expect
+
 if __name__ == "__main__":
     pytest.main()
-
 

@@ -50,9 +50,15 @@ class BIPEntropy(object):
             raise ValueError('ERROR: Invalid xprv')
         return self.__hmac_sha512(self.__derive_k(path, xprv))
 
+    def bip32_xprv_to_hex(self, index, width, xprv_string):
+        # export entropy as hex
+        path = f"83696968p/128169p/{width}p/{index}p"
+        ent = self.bip32_xprv_to_entropy(path, xprv_string)
+        return ent[0:width].hex()
+
     def bip32_xprv_to_xprv(self, index, xprv_string):
         # app_no = 32 => XPRV to XPRV
-        path = "83696968p/32p/{index}p".format(index=index)
+        path = f"83696968p/32p/{index}p"
         node = BTC.parse.bip32_prv(xprv_string).subkey_for_path(path)
 
         # if API to pycoin hadn't been shitcoined:
