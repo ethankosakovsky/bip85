@@ -20,71 +20,71 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from bipentropy import bipentropy
-import unittest
+import pytest
 
-class EntropyTest(unittest.TestCase):
-    def test_mnemonic(self):
-        e = bipentropy.BIPEntropy()
-        mnemonic = 'install scatter logic circle pencil average fall shoe quantum disease suspect usage'
-        test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic)
-        expected = 'efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7'
-        self.assertEqual(test.hex(), expected)
+XPRV = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
 
-        # with password
-        test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic, 'TREZOR')
-        expected = 'd24cee04c61c4a47751658d078ae9b0cc9550fe43eee643d5c10ac2e3f5edbca757b2bd74d55ff5bcc2b1608d567053660d9c7447ae1eb84b6619282fd391844'
-        self.assertEqual(test.hex(), expected)
+def test_mnemonic():
+    e = bipentropy.BIPEntropy()
+    mnemonic = 'install scatter logic circle pencil average fall shoe quantum disease suspect usage'
+    test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic)
+    expected = '71356cdf2f6851c0499b47fe16ef121883f8c58e7d6fb4c33a9017df71f3b0fe21f92d043ee4f19676384a3d943554904caca131269dcb84151ecb2f7ca31902'
+    assert test.hex() == expected
 
-    def test_xprv(self):
-        e = bipentropy.BIPEntropy()
-        xprv = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
-        test = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", xprv)
-        expected = 'efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7'
-        self.assertEqual(test.hex(), expected)
+    # with password
+    test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic, 'TREZOR')
+    expected = '5c56a2a19ebe8f86c4cbb788dd264bd96387dac2047dac799c51fb6218da0513da44bc0f4603815cc8c8c456dbd3aae79e334fb19dbeffc43fc236d58368ebdb'
+    assert test.hex() == expected
 
-    def test_entropy_to_mnemonic(self):
-        e = bipentropy.BIPEntropy()
-        xprv = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
-        entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", xprv)
-
-        words12 = 'useful guitar veteran zone perfect october explain grant clarify december flight recycle'
-        words15 = 'useful guitar veteran zone perfect october explain grant clarify december flight raw banana estate uncle'
-        words24 = 'useful guitar veteran zone perfect october explain grant clarify december flight raw banana estate unfair grow search witness echo market primary alley forward boring'
-
-        self.assertEqual(e.entropy_to_bip39(entropy, 12), words12)
-        self.assertEqual(e.entropy_to_bip39(entropy, 15), words15)
-        self.assertEqual(e.entropy_to_bip39(entropy, 24), words24)
-
-    def test_wif_from_entropy(self):
-        e = bipentropy.BIPEntropy()
-        xprv = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
-        entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", xprv)
-        self.assertEqual(e.entropy_to_wif(entropy), 'L5G6UFMvJaFt1KPvupEtT8TUN2YrFnQJm1LA2nEczWrR7MuoxB1Z')
-
-    def test_applications(self):
-        e = bipentropy.BIPEntropy()
-        xprv = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
-        entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/12'/0'", xprv)
-        self.assertEqual(entropy[:16].hex(), '6250b68daf746d12a24d58b4787a714b')
-        self.assertEqual(e.entropy_to_bip39(entropy, 12),
-                         'girl mad pet galaxy egg matter matrix prison refuse sense ordinary nose')
-
-        entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/18'/0'", xprv)
-        self.assertEqual(entropy[:24].hex(), '938033ed8b12698449d4bbca3c853c66b293ea1b1ce9d9dc')
-        self.assertEqual(e.entropy_to_bip39(entropy, 18),
-                         'near account window bike charge season chef number sketch tomorrow excuse sniff circle vital hockey outdoor supply token')
-
-        entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/24'/0'", xprv)
-        self.assertEqual(entropy[:32].hex(), 'ae131e2312cdc61331542efe0d1077bac5ea803adf24b313a4f0e48e9c51f37f')
-        self.assertEqual(e.entropy_to_bip39(entropy, 24),
-                         'puppy ocean match cereal symbol another shed magic wrap hammer bulb intact gadget divorce twin tonight reason outdoor destroy simple truth cigar social volcano')
+def test_xprv_to_entropy():
+    e = bipentropy.BIPEntropy()
+    test = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
+    expected = '71356cdf2f6851c0499b47fe16ef121883f8c58e7d6fb4c33a9017df71f3b0fe21f92d043ee4f19676384a3d943554904caca131269dcb84151ecb2f7ca31902'
+    assert test.hex() == expected
 
 
-def __main__():
-    unittest.main()
+def test_entropy_to_mnemonic():
+    e = bipentropy.BIPEntropy()
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
 
+    words12 = 'illness problem daughter gain lunar then chapter happy wrap resist setup corn'
+    assert e.entropy_to_bip39(entropy, 12) == words12
+
+    words15 = 'illness problem daughter gain lunar then chapter happy wrap resist setup country display glare debate'
+    assert e.entropy_to_bip39(entropy, 15) == words15
+
+    words24 = 'illness problem daughter gain lunar then chapter happy wrap resist setup country display glare delay pupil regular border piano cook warfare what sentence supreme'
+    assert e.entropy_to_bip39(entropy, 24) == words24
+
+def test_wif_from_entropy():
+    # PDG: not sure about this?
+    e = bipentropy.BIPEntropy()
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
+    assert e.entropy_to_wif(entropy) == 'L11mqGbaozsMYDHS7dfZ2bPGL2viSH6zHr69MKwvpxuw7cCR4M1u'
+
+def test_applications():
+    e = bipentropy.BIPEntropy()
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/12'/0'", XPRV)
+    assert entropy[:16].hex() == 'f0337580e36fd50ef8734cd9dcfb9a78'
+    assert e.entropy_to_bip39(entropy, 12) == \
+                     'usual option gasp short wool manual tide hat supply treat track valve'
+
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/18'/0'", XPRV)
+    assert entropy[:24].hex() == '60529dbbf2707ea89e4cd41f7e26fcebf2b492b9a99c5e95'
+    assert e.entropy_to_bip39(entropy, 18) == \
+                     'gate neutral humble top among february junior once buyer van sand subject clip enable trade crime future protect'
+
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/24'/0'", XPRV)
+    assert entropy[:32].hex() == '5166983339d6fc685abe49162327ac2e915fcc17132dad7a2b1e8f324b2f06bd'
+    assert e.entropy_to_bip39(entropy, 24) == \
+                     'fabric crumble art inhale hurt crouch helmet since bike bomb twelve frog bicycle toward fox grant pulp spend sibling bunker caution nurse brain prison'
+
+def test_xprv_application():
+    e = bipentropy.BIPEntropy()
+    result = e.bip32_xprv_to_xprv(0, XPRV)
+    assert result == 'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
 
 if __name__ == "__main__":
-    __main__()
+    pytest.main()
 
 
