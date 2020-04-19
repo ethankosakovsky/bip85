@@ -1,3 +1,4 @@
 pycoin
 mnemonic
 pytest
+base58

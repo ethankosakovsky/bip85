@@ -20,7 +20,8 @@ setup(
     description="Implementation of Bitcoin BIP Entropy",
     long_description=read("README.md"),
     url="https://github.com/ethankosakovsky/bipentropy",
-    install_requires=["mnemonic", "pycoin"],
+    download_url="https://github.com/ethankosakovsky/bipentropy/archive/0.1.tar.gz",
+    install_requires=["mnemonic", "pycoin", "base58", "pytest"],
     zip_safe=False,
     classifiers=[
         "License :: OSI Approved :: MIT License",
