@@ -24,6 +24,7 @@ import hashlib
 from mnemonic import Mnemonic as bip39
 from pycoin.symbols.btc import network as BTC
 from pycoin.encoding.bytes32 import from_bytes_32, to_bytes_32
+import base58
 
 
 class BIPEntropy(object):
@@ -60,14 +61,21 @@ class BIPEntropy(object):
 
     def bip32_xprv_to_xprv(self, path, xprv_string):
         path = self.__decorate_path(path)
-        node = BTC.parse.bip32_prv(xprv_string).subkey_for_path(path)
+        ent = self.bip32_xprv_to_entropy(path, xprv_string)
 
-        # if API to pycoin hadn't been shitcoined:
-        # return BIP32Node(node.chain_code(), secret_exponent=node.secret_exponent()).hwif()
-
-        node._depth = 0
-        node._parent_fingerprint = bytes(4)
-        node._child_index = 0
+        # From Peter Gray
+        # Taking 64 bytes of the HMAC digest, the first 32 bytes are the chain code, and second 32 bytes are the private
+        # key for BIP32 XPRV value. Child number, depth, and parent fingerprint are forced to zero.
+        prefix = b'\x04\x88\xad\xe4'
+        depth = b'\x00'
+        parent_fingerprint = b'\x00\x00\x00\x00'
+        child_num = b'\x00\x00\x00\x00'
+        chain_code = ent[:32]
+        private_key = b'\x00' + ent[32:]
+        extended_key = prefix + depth + parent_fingerprint + child_num + chain_code + private_key
+        checksum = hashlib.sha256(hashlib.sha256(extended_key).digest()).digest()[:4]
+        derived_xprv_string = base58.b58encode(extended_key + checksum).decode()
+        node = BTC.parse(derived_xprv_string)
 
         return node.hwif(as_private=True)
 
