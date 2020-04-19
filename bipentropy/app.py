@@ -44,14 +44,14 @@ def bip39(xprv_string, language, words, index):
 
 
 def wif(xprv_string, index):
-    # m/83696968'/0'/index'
+    # m/83696968'/2'/index'
     e = bipentropy.BIPEntropy()
-    path = f"83696968p/0p/{index}p"
+    path = f"83696968p/2p/{index}p"
     return e.entropy_to_wif(e.bip32_xprv_to_entropy(path, xprv_string))
 
 
 def hex(xprv_string, index, width):
-    # m/83696968'/0'/index'
+    # m/83696968'/128169p'/index'
     e = bipentropy.BIPEntropy()
     path = f"83696968p/128169p/{width}p/{index}p"
     return e.bip32_xprv_to_hex(path, width, xprv_string)
