@@ -39,7 +39,7 @@ class BIPEntropy(object):
         return self.__get_k_from_node(node)
 
     def __hmac_sha512(self, message_k):
-        return hmac.new(message_k, msg=b'bip-entropy-from-k', digestmod=hashlib.sha512).digest()
+        return hmac.new(key=b'bip-entropy-from-k', msg=message_k, digestmod=hashlib.sha512).digest()
 
     def bip39_mnemonic_to_entropy(self, path, mnemonic, passphrase=''):
         bip39_seed = bip39.to_seed(mnemonic, passphrase=passphrase)

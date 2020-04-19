@@ -29,7 +29,7 @@ def test_mnemonic():
     e = bipentropy.BIPEntropy()
     mnemonic = 'install scatter logic circle pencil average fall shoe quantum disease suspect usage'
     test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic)
-    expected = '71356cdf2f6851c0499b47fe16ef121883f8c58e7d6fb4c33a9017df71f3b0fe21f92d043ee4f19676384a3d943554904caca131269dcb84151ecb2f7ca31902'
+    expected = 'efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7'
     assert test.hex() == expected
 
     # with password
@@ -40,7 +40,7 @@ def test_mnemonic():
 def test_xprv_to_entropy():
     e = bipentropy.BIPEntropy()
     test = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
-    expected = '71356cdf2f6851c0499b47fe16ef121883f8c58e7d6fb4c33a9017df71f3b0fe21f92d043ee4f19676384a3d943554904caca131269dcb84151ecb2f7ca31902'
+    expected = 'efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7'
     assert test.hex() == expected
 
 
@@ -48,37 +48,37 @@ def test_entropy_to_mnemonic():
     e = bipentropy.BIPEntropy()
     entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
 
-    words12 = 'illness problem daughter gain lunar then chapter happy wrap resist setup corn'
+    words12 = 'useful guitar veteran zone perfect october explain grant clarify december flight recycle'
     assert e.entropy_to_bip39(entropy, 12) == words12
 
-    words15 = 'illness problem daughter gain lunar then chapter happy wrap resist setup country display glare debate'
+    words15 = 'useful guitar veteran zone perfect october explain grant clarify december flight raw banana estate uncle'
     assert e.entropy_to_bip39(entropy, 15) == words15
 
-    words24 = 'illness problem daughter gain lunar then chapter happy wrap resist setup country display glare delay pupil regular border piano cook warfare what sentence supreme'
+    words24 = 'useful guitar veteran zone perfect october explain grant clarify december flight raw banana estate unfair grow search witness echo market primary alley forward boring'
     assert e.entropy_to_bip39(entropy, 24) == words24
 
 def test_wif_from_entropy():
     # PDG: not sure about this?
     e = bipentropy.BIPEntropy()
     entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
-    assert e.entropy_to_wif(entropy) == 'L11mqGbaozsMYDHS7dfZ2bPGL2viSH6zHr69MKwvpxuw7cCR4M1u'
+    assert e.entropy_to_wif(entropy) == 'L5G6UFMvJaFt1KPvupEtT8TUN2YrFnQJm1LA2nEczWrR7MuoxB1Z'
 
 def test_mnemonic():
     e = bipentropy.BIPEntropy()
     entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/12'/0'", XPRV)
-    assert entropy[:16].hex() == 'f0337580e36fd50ef8734cd9dcfb9a78'
+    assert entropy[:16].hex() == '6250b68daf746d12a24d58b4787a714b'
     assert e.entropy_to_bip39(entropy, 12) == \
-                     'usual option gasp short wool manual tide hat supply treat track valve'
+                     'girl mad pet galaxy egg matter matrix prison refuse sense ordinary nose'
 
     entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/18'/0'", XPRV)
-    assert entropy[:24].hex() == '60529dbbf2707ea89e4cd41f7e26fcebf2b492b9a99c5e95'
+    assert entropy[:24].hex() == '938033ed8b12698449d4bbca3c853c66b293ea1b1ce9d9dc'
     assert e.entropy_to_bip39(entropy, 18) == \
-                     'gate neutral humble top among february junior once buyer van sand subject clip enable trade crime future protect'
+                     'near account window bike charge season chef number sketch tomorrow excuse sniff circle vital hockey outdoor supply token'
 
     entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/24'/0'", XPRV)
-    assert entropy[:32].hex() == '5166983339d6fc685abe49162327ac2e915fcc17132dad7a2b1e8f324b2f06bd'
+    assert entropy[:32].hex() == 'ae131e2312cdc61331542efe0d1077bac5ea803adf24b313a4f0e48e9c51f37f'
     assert e.entropy_to_bip39(entropy, 24) == \
-                     'fabric crumble art inhale hurt crouch helmet since bike bomb twelve frog bicycle toward fox grant pulp spend sibling bunker caution nurse brain prison'
+                     'puppy ocean match cereal symbol another shed magic wrap hammer bulb intact gadget divorce twin tonight reason outdoor destroy simple truth cigar social volcano'
 
 def test_xprv():
     e = bipentropy.BIPEntropy()
@@ -86,9 +86,9 @@ def test_xprv():
     assert result == 'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
 
 @pytest.mark.parametrize('path, width, expect', [
-        ("83696968'/128169'/32'/0'", 32, '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'),
-        ("83696968'/128169'/64'/0'", 64, '4fc6759ef9c0e12aed757ad874706a3955ef125c8f8eabb3909aeda028f5e285bf496a23265bac09f537f4cc5e1efa689f5625ded2cd996c042b2657263c6816'),
-        ("83696968'/128169'/64'/1234'", 64, 'e1a35aeae27cb3c93b0d437e94b64a891cdff9ac250537ec675d0e6a2680f1d2edf9927f4c5233b19b15fdea4063a8b62f85ff8666176d226741ed192075a8db'),
+        ("83696968'/128169'/32'/0'", 32, 'ea3ceb0b02ee8e587779c63f4b7b3a21e950a213f1ec53cab608d13e8796e6dc'),
+        ("83696968'/128169'/64'/0'", 64, '492db4698cf3b73a5a24998aa3e9d7fa96275d85724a91e71aa2d645442f878555d078fd1f1f67e368976f04137b1f7a0d19232136ca50c44614af72b5582a5c'),
+        ("83696968'/128169'/64'/1234'", 64, '61d3c182f7388268463ef327c454a10bc01b3992fa9d2ee1b3891a6b487a5248793e61271066be53660d24e8cb76ff0cfdd0e84e478845d797324c195df9ab8e'),
     ])
 def test_hex(path, width, expect):
     e = bipentropy.BIPEntropy()
@@ -96,14 +96,14 @@ def test_hex(path, width, expect):
 
 def test_bipentropy_applications():
     assert app.bip39(XPRV, 'english', 18, 0) == \
-           'gate neutral humble top among february junior once buyer van sand subject clip enable trade crime future protect'
+           'near account window bike charge season chef number sketch tomorrow excuse sniff circle vital hockey outdoor supply token'
 
     assert app.xprv(XPRV, 0) == \
            'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
 
-    assert app.wif(XPRV, 0) == 'L11mqGbaozsMYDHS7dfZ2bPGL2viSH6zHr69MKwvpxuw7cCR4M1u'
+    assert app.wif(XPRV, 0) == 'L5G6UFMvJaFt1KPvupEtT8TUN2YrFnQJm1LA2nEczWrR7MuoxB1Z'
 
-    assert app.hex(XPRV, 0, 32) == '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'
+    assert app.hex(XPRV, 0, 32) == 'ea3ceb0b02ee8e587779c63f4b7b3a21e950a213f1ec53cab608d13e8796e6dc'
 
 if __name__ == "__main__":
     pytest.main()
