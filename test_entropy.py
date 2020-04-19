@@ -20,6 +20,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from bipentropy import bipentropy
+from bipentropy import app
 import pytest
 
 XPRV = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
@@ -62,7 +63,7 @@ def test_wif_from_entropy():
     entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
     assert e.entropy_to_wif(entropy) == 'L11mqGbaozsMYDHS7dfZ2bPGL2viSH6zHr69MKwvpxuw7cCR4M1u'
 
-def test_applications():
+def test_mnemonic():
     e = bipentropy.BIPEntropy()
     entropy = e.bip32_xprv_to_entropy("m/83696968'/39'/0'/12'/0'", XPRV)
     assert entropy[:16].hex() == 'f0337580e36fd50ef8734cd9dcfb9a78'
@@ -79,19 +80,30 @@ def test_applications():
     assert e.entropy_to_bip39(entropy, 24) == \
                      'fabric crumble art inhale hurt crouch helmet since bike bomb twelve frog bicycle toward fox grant pulp spend sibling bunker caution nurse brain prison'
 
-def test_xprv_application():
+def test_xprv():
     e = bipentropy.BIPEntropy()
-    result = e.bip32_xprv_to_xprv(0, XPRV)
+    result = e.bip32_xprv_to_xprv("83696968'/32'/0'", XPRV)
     assert result == 'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
 
-@pytest.mark.parametrize('index, width, expect', [
-        (0, 32, '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'),
-        (0, 64, '4fc6759ef9c0e12aed757ad874706a3955ef125c8f8eabb3909aeda028f5e285bf496a23265bac09f537f4cc5e1efa689f5625ded2cd996c042b2657263c6816'),
-        (1234, 64, 'e1a35aeae27cb3c93b0d437e94b64a891cdff9ac250537ec675d0e6a2680f1d2edf9927f4c5233b19b15fdea4063a8b62f85ff8666176d226741ed192075a8db'),
+@pytest.mark.parametrize('path, width, expect', [
+        ("83696968'/128169'/32'/0'", 32, '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'),
+        ("83696968'/128169'/64'/0'", 64, '4fc6759ef9c0e12aed757ad874706a3955ef125c8f8eabb3909aeda028f5e285bf496a23265bac09f537f4cc5e1efa689f5625ded2cd996c042b2657263c6816'),
+        ("83696968'/128169'/64'/1234'", 64, 'e1a35aeae27cb3c93b0d437e94b64a891cdff9ac250537ec675d0e6a2680f1d2edf9927f4c5233b19b15fdea4063a8b62f85ff8666176d226741ed192075a8db'),
     ])
-def test_hex_application(index, width, expect):
+def test_hex(path, width, expect):
     e = bipentropy.BIPEntropy()
-    assert e.bip32_xprv_to_hex(index, width, XPRV) == expect
+    assert e.bip32_xprv_to_hex(path, width, XPRV) == expect
+
+def test_bipentropy_applications():
+    assert app.bip39(XPRV, 'english', 18, 0) == \
+           'gate neutral humble top among february junior once buyer van sand subject clip enable trade crime future protect'
+
+    assert app.xprv(XPRV, 0) == \
+           'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
+
+    assert app.wif(XPRV, 0) == 'L11mqGbaozsMYDHS7dfZ2bPGL2viSH6zHr69MKwvpxuw7cCR4M1u'
+
+    assert app.hex(XPRV, 0, 32) == '4f4ea2ef43af14e51f2453221d50762fc3767e2287dc524ca58f10e5225a6ead'
 
 if __name__ == "__main__":
     pytest.main()
