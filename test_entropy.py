@@ -25,6 +25,7 @@ import pytest
 
 XPRV = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
 
+
 def test_mnemonic():
     e = bipentropy.BIPEntropy()
     mnemonic = 'install scatter logic circle pencil average fall shoe quantum disease suspect usage'
@@ -58,10 +59,10 @@ def test_entropy_to_mnemonic():
     assert e.entropy_to_bip39(entropy, 24) == words24
 
 def test_wif_from_entropy():
-    # PDG: not sure about this?
     e = bipentropy.BIPEntropy()
-    entropy = e.bip32_xprv_to_entropy("m/83696968'/0'/0'", XPRV)
-    assert e.entropy_to_wif(entropy) == 'L5G6UFMvJaFt1KPvupEtT8TUN2YrFnQJm1LA2nEczWrR7MuoxB1Z'
+    entropy = e.bip32_xprv_to_entropy("m/83696968'/2'/0'", XPRV)
+    entropy = entropy[:32]
+    assert e.entropy_to_wif(entropy) == 'Kzyv4uF39d4Jrw2W7UryTHwZr1zQVNk4dAFyqE6BuMrMh1Za7uhp'
 
 def test_mnemonic():
     e = bipentropy.BIPEntropy()
@@ -83,7 +84,7 @@ def test_mnemonic():
 def test_xprv():
     e = bipentropy.BIPEntropy()
     result = e.bip32_xprv_to_xprv("83696968'/32'/0'", XPRV)
-    assert result == 'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
+    assert result == 'xprv9s21ZrQH143K2srSbCSg4m4kLvPMzcWydgmKEnMmoZUurYuBuYG46c6P71UGXMzmriLzCCBvKQWBUv3vPB3m1SATMhp3uEjXHJ42jFg7myX'
 
 @pytest.mark.parametrize('path, width, expect', [
         ("83696968'/128169'/32'/0'", 32, 'ea3ceb0b02ee8e587779c63f4b7b3a21e950a213f1ec53cab608d13e8796e6dc'),
@@ -99,9 +100,9 @@ def test_bipentropy_applications():
            'near account window bike charge season chef number sketch tomorrow excuse sniff circle vital hockey outdoor supply token'
 
     assert app.xprv(XPRV, 0) == \
-           'xprv9s21ZrQH143K3KJoGoKpsDsWdDNDBKs1wqFymBpCGJtrYXrfKzykGDBadZq5SrNde22F83X9qhFZr4uyV9TptTgLqCBc6XFN9tssphdxVeg'
+           'xprv9s21ZrQH143K2srSbCSg4m4kLvPMzcWydgmKEnMmoZUurYuBuYG46c6P71UGXMzmriLzCCBvKQWBUv3vPB3m1SATMhp3uEjXHJ42jFg7myX'
 
-    assert app.wif(XPRV, 0) == 'L5G6UFMvJaFt1KPvupEtT8TUN2YrFnQJm1LA2nEczWrR7MuoxB1Z'
+    assert app.wif(XPRV, 0) == 'Kzyv4uF39d4Jrw2W7UryTHwZr1zQVNk4dAFyqE6BuMrMh1Za7uhp'
 
     assert app.hex(XPRV, 0, 32) == 'ea3ceb0b02ee8e587779c63f4b7b3a21e950a213f1ec53cab608d13e8796e6dc'
 
