@@ -28,39 +28,39 @@ import base58
 
 
 class BIPEntropy(object):
-    def __decorate_path(self, path):
+    def _decorate_path(self, path):
         return path.replace("m/", "").replace("'", "p")
 
-    def __get_k_from_node(self, node):
+    def _get_k_from_node(self, node):
         return to_bytes_32(node.secret_exponent())
 
-    def __derive_k(self, path, xprv):
-        path = self.__decorate_path(path)
+    def _derive_k(self, path, xprv):
+        path = self._decorate_path(path)
         node = xprv.subkey_for_path(path)
-        return self.__get_k_from_node(node)
+        return self._get_k_from_node(node)
 
-    def __hmac_sha512(self, message_k):
+    def _hmac_sha512(self, message_k):
         return hmac.new(key=b'bip-entropy-from-k', msg=message_k, digestmod=hashlib.sha512).digest()
 
     def bip39_mnemonic_to_entropy(self, path, mnemonic, passphrase=''):
         bip39_seed = bip39.to_seed(mnemonic, passphrase=passphrase)
         xprv = BTC.keys.bip32_seed(bip39_seed)
-        return self.__hmac_sha512(self.__derive_k(path, xprv))
+        return self._hmac_sha512(self._derive_k(path, xprv))
 
     def bip32_xprv_to_entropy(self, path, xprv_string):
         xprv = BTC.parse(xprv_string)
         if xprv is None:
             raise ValueError('ERROR: Invalid xprv')
-        return self.__hmac_sha512(self.__derive_k(path, xprv))
+        return self._hmac_sha512(self._derive_k(path, xprv))
 
     def bip32_xprv_to_hex(self, path, width, xprv_string):
         # export entropy as hex
-        path = self.__decorate_path(path)
+        path = self._decorate_path(path)
         ent = self.bip32_xprv_to_entropy(path, xprv_string)
         return ent[0:width].hex()
 
     def bip32_xprv_to_xprv(self, path, xprv_string):
-        path = self.__decorate_path(path)
+        path = self._decorate_path(path)
         ent = self.bip32_xprv_to_entropy(path, xprv_string)
 
         # From Peter Gray
@@ -81,7 +81,7 @@ class BIPEntropy(object):
 
     def entropy_from_wif(self, wif):
         node = BTC.keys.from_text(wif)
-        return self.__hmac_sha512(self.__get_k_from_node(node))
+        return self._hmac_sha512(self._get_k_from_node(node))
 
     def entropy_to_wif(self, entropy):
         return BTC.keys.private(secret_exponent=from_bytes_32(entropy[:32])).wif()
