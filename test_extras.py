@@ -29,8 +29,13 @@ XPRV = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQp
 def test_cripple():
     e = BIPEntropyExtras()
     result = e.bip32_to_cripple_seed("m/574946'/0'", XPRV)
-    assert result == 'ssyKPX1uyL4mTpba6hHDRTXbvkKgv'
+    assert result == 'ssyKPX1uyL4mTpba6hHDRTX2Cj6gT'
 
+
+def test_monero():
+    e = BIPEntropyExtras()
+    result = e.bip32_to_monero_seed("m/83696968'/12839'/25'/0'", XPRV, 32)
+    assert result == 'acoustic criminal plywood acoustic swagger ajar lukewarm gifts dash eject king molten irritate pitched sphere megabyte fowls cool dagger click eskimos hornet tequila nuance fowls'
 
 if __name__ == "__main__":
     pytest.main()

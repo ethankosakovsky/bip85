@@ -21,15 +21,26 @@
 
 from bipentropy import BIPEntropy
 import base58
+import hashlib
+from monero.seed import Seed as MoneroSeed
 
-
+# this class is for non Bitcoin things
 class BIPEntropyExtras(BIPEntropy):
-    def entropy_to_cripple_seed(self, entropy, size=20):
-        if size <= 16 or size >= 30:
-            raise ValueError('16 <= size =< 20')
-        entropy = b'\x21' + entropy[:size]
-        return base58.b58encode(entropy, alphabet=base58.RIPPLE_ALPHABET).decode()
+    def entropy_to_cripple_seed(self, entropy):
+        key = b'\x21' + entropy[:16]
+        checksum = hashlib.sha256(hashlib.sha256(key).digest()).digest()[:4]
+        raw_seed = key + checksum
+        return base58.b58encode(raw_seed, alphabet=base58.RIPPLE_ALPHABET).decode()
 
     def bip32_to_cripple_seed(self, path, xprv_string):
         entropy = self.bip32_xprv_to_entropy(path, xprv_string)
         return self.entropy_to_cripple_seed(entropy)
+
+    def entropy_to_monero_seed(self, entropy, size=32):
+        s = MoneroSeed(entropy[:size].hex())
+        return s.phrase
+
+    def bip32_to_monero_seed(self, path, xprv_string, size=32):
+        entropy = self.bip32_xprv_to_entropy(path, xprv_string)
+        return self.entropy_to_monero_seed(entropy, size)
+
