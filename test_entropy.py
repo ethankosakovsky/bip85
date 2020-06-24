@@ -33,10 +33,15 @@ def test_mnemonic():
     expected = 'efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7'
     assert test.hex() == expected
 
+
+def test_mnemonic_pwd():
+    e = bipentropy.BIPEntropy()
+    mnemonic = 'install scatter logic circle pencil average fall shoe quantum disease suspect usage'
     # with password
     test = e.bip39_mnemonic_to_entropy("m/83696968'/0'/0'", mnemonic, 'TREZOR')
-    expected = '5c56a2a19ebe8f86c4cbb788dd264bd96387dac2047dac799c51fb6218da0513da44bc0f4603815cc8c8c456dbd3aae79e334fb19dbeffc43fc236d58368ebdb'
+    expected = 'd24cee04c61c4a47751658d078ae9b0cc9550fe43eee643d5c10ac2e3f5edbca757b2bd74d55ff5bcc2b1608d567053660d9c7447ae1eb84b6619282fd391844'
     assert test.hex() == expected
+
 
 def test_xprv_to_entropy():
     e = bipentropy.BIPEntropy()
