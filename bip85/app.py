@@ -19,7 +19,7 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import bipentropy
+from bip85 import BIP85
 
 
 def bip39(xprv_string, language, words, index):
@@ -36,7 +36,7 @@ def bip39(xprv_string, language, words, index):
         'czech': 8
     }
     lang_code = language_lookup[language]
-    e = bipentropy.BIPEntropy()
+    e = BIP85()
     path = f"83696968p/39p/{lang_code}p/{words}p/{index}p"
 
     entropy = e.bip32_xprv_to_entropy(path, xprv_string)
@@ -45,20 +45,20 @@ def bip39(xprv_string, language, words, index):
 
 def wif(xprv_string, index):
     # m/83696968'/2'/index'
-    e = bipentropy.BIPEntropy()
+    e = BIP85()
     path = f"83696968p/2p/{index}p"
     return e.entropy_to_wif(e.bip32_xprv_to_entropy(path, xprv_string))
 
 
 def hex(xprv_string, index, width):
     # m/83696968'/128169p'/index'
-    e = bipentropy.BIPEntropy()
+    e = BIP85()
     path = f"83696968p/128169p/{width}p/{index}p"
     return e.bip32_xprv_to_hex(path, width, xprv_string)
 
 
 def xprv(xprv_string, index):
     # 83696968'/32'/index'
-    e = bipentropy.BIPEntropy()
+    e = BIP85()
     path = f"83696968p/32p/{index}p"
     return e.bip32_xprv_to_xprv(path, xprv_string)

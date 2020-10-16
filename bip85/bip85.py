@@ -27,7 +27,7 @@ from pycoin.encoding.bytes32 import from_bytes_32, to_bytes_32
 import base58
 
 
-class BIPEntropy(object):
+class BIP85(object):
     def _decorate_path(self, path):
         return path.replace("m/", "").replace("'", "p")
 

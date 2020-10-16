@@ -19,24 +19,28 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from bipentropy.extras import BIPEntropyExtras
-import pytest
+from bip85 import BIP85
+import base58
+import hashlib
+from monero.seed import Seed as MoneroSeed
 
-# install scatter logic circle pencil average fall shoe quantum disease suspect usage
-XPRV = 'xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb'
+# this class is for non Bitcoin things
+class BIP85Extras(BIP85):
+    def entropy_to_cripple_seed(self, entropy):
+        key = b'\x21' + entropy[:16]
+        checksum = hashlib.sha256(hashlib.sha256(key).digest()).digest()[:4]
+        raw_seed = key + checksum
+        return base58.b58encode(raw_seed, alphabet=base58.RIPPLE_ALPHABET).decode()
 
+    def bip32_to_cripple_seed(self, path, xprv_string):
+        entropy = self.bip32_xprv_to_entropy(path, xprv_string)
+        return self.entropy_to_cripple_seed(entropy)
 
-def test_cripple():
-    e = BIPEntropyExtras()
-    result = e.bip32_to_cripple_seed("m/574946'/0'", XPRV)
-    assert result == 'ssyKPX1uyL4mTpba6hHDRTX2Cj6gT'
+    def entropy_to_monero_seed(self, entropy, size=32):
+        s = MoneroSeed(entropy[:size].hex())
+        return s.phrase
 
-
-def test_monero():
-    e = BIPEntropyExtras()
-    result = e.bip32_to_monero_seed("m/83696968'/12839'/25'/0'", XPRV, 32)
-    assert result == 'acoustic criminal plywood acoustic swagger ajar lukewarm gifts dash eject king molten irritate pitched sphere megabyte fowls cool dagger click eskimos hornet tequila nuance fowls'
-
-if __name__ == "__main__":
-    pytest.main()
+    def bip32_to_monero_seed(self, path, xprv_string, size=32):
+        entropy = self.bip32_xprv_to_entropy(path, xprv_string)
+        return self.entropy_to_monero_seed(entropy, size)
 

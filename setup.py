@@ -13,14 +13,14 @@ def read(*path):
 
 setup(
     packages=find_packages(),
-    name="bipentropy",
+    name="bip85",
     version="0.1",
     author="Ethan Kosakovsky",
     author_email="ethankosakovsky@protonmail.com",
-    description="Implementation of Bitcoin BIP Entropy",
+    description="Implementation of Bitcoin BIP 85",
     long_description=read("README.md"),
-    url="https://github.com/ethankosakovsky/bipentropy",
-    download_url="https://github.com/ethankosakovsky/bipentropy/archive/0.1.tar.gz",
+    url="https://github.com/ethankosakovsky/bip85",
+    download_url="https://github.com/ethankosakovsky/bip85/archive/0.1.tar.gz",
     install_requires=["mnemonic", "pycoin", "base58", "pytest"],
     zip_safe=False,
     classifiers=[
@@ -28,7 +28,6 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: MacOS :: MacOS X",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
     ],
 )
