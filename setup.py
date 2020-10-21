@@ -1,33 +1,26 @@
 #!/usr/bin/env python
-import os
-from setuptools import setup, find_packages
+import setuptools
 
-CWD = os.path.dirname(os.path.realpath(__file__))
+with open("README.md", "rt") as fh:
+    long_description = fh.read()
 
-
-def read(*path):
-    filename = os.path.join(CWD, *path)
-    with open(filename, "r") as f:
-        return f.read()
-
-
-setup(
-    packages=find_packages(),
+setuptools.setup(
     name="bip85",
-    version="0.1",
+    version="0.1.0",
+    license="MIT",
     author="Ethan Kosakovsky",
     author_email="ethankosakovsky@protonmail.com",
     description="Implementation of Bitcoin BIP 85",
-    long_description=read("README.md"),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/ethankosakovsky/bip85",
-    download_url="https://github.com/ethankosakovsky/bip85/archive/0.1.tar.gz",
-    install_requires=["mnemonic", "pycoin", "base58", "pytest"],
+    packages=setuptools.find_packages(),
+    keywords=['BIP85', 'entropy', 'bitcoin'],
+    install_requires=["mnemonic", "pycoin", "base58", "pytest", "monero"],
     zip_safe=False,
     classifiers=[
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: POSIX :: Linux",
-        "Operating System :: Microsoft :: Windows",
-        "Operating System :: MacOS :: MacOS X",
         "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
 )
