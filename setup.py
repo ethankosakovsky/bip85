@@ -26,4 +26,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Topic :: Security :: Cryptography",
     ],
+    entry_points = {
+        "console_scripts": ["bip85-cli=bip85.cli:main"],
+    },
 )

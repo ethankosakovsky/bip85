@@ -22,20 +22,22 @@
 from bip85 import BIP85
 
 
+LANGUAGE_LOOKUP = {
+    'english': 0,
+    'japanese': 1,
+    'korean': 2,
+    'spanish': 3,
+    'chinese_simplified': 4,
+    'chinese_traditional': 5,
+    'french': 6,
+    'italian': 7,
+    'czech': 8
+}
+
+
 def bip39(xprv_string, language, words, index):
     # 83696968'/39'/language'/words'/index'
-    language_lookup = {
-        'english': 0,
-        'japanese': 1,
-        'korean': 2,
-        'spanish': 3,
-        'chinese_simplified': 4,
-        'chinese_traditional': 5,
-        'french': 6,
-        'italian': 7,
-        'czech': 8
-    }
-    lang_code = language_lookup[language]
+    lang_code = LANGUAGE_LOOKUP[language]
     bip85 = BIP85()
     path = f"83696968p/39p/{lang_code}p/{words}p/{index}p"
 
