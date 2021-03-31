@@ -1,4 +1,5 @@
 import argparse
+import binascii
 
 from mnemonic import Mnemonic as bip39
 from pycoin.symbols.btc import network as BTC
@@ -19,7 +20,11 @@ def _get_xprv_from_args(args):
     if args.bip32_master_seed:
         return _bip32_master_seed_to_xprv(
             bytearray.fromhex(args.bip32_master_seed))
-    return _bip32_master_seed_to_xprv(bip39.to_seed(args.bip39_mnemonic))
+    bip39_mnemonic = args.bip39_mnemonic
+    if args.bip39_entropy:
+        bip39_mnemonic = bip39(args.language).to_mnemonic(
+            binascii.unhexlify(args.bip39_entropy))
+    return _bip32_master_seed_to_xprv(bip39.to_seed(bip39_mnemonic))
 
 
 def main():
@@ -29,6 +34,9 @@ def main():
         '--bip32-master-seed',
         help='Input BIP32 master seed (AKA initial entropy), which is usually '
         'computed by hashing the BIP39 mnemonic. Must be in hex format')
+    seed_group.add_argument('--bip39-entropy',
+                            help='Input BIP39 initial entropy (used to derive '
+                            'the mnemonic)')
     seed_group.add_argument('--bip39-mnemonic',
                             help='Input BIP39 mnemonic phrase')
     seed_group.add_argument('--xprv',
