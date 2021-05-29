@@ -54,6 +54,7 @@ def main():
                                   default='english',
                                   help='Language for BIP39 mnemonic')
     app_bip39_parser.add_argument('--num-words',
+                                  type=int,
                                   choices=(12, 15, 18, 21, 24),
                                   default=12,
                                   help='Number of words in the BIP39 mnemonic')
