@@ -1,0 +1,17 @@
+FROM python:3.7.12-alpine3.14 AS build-stage
+ARG DEBIAN_FRONTEND=noninteractive
+# Install build dependencies
+RUN apk add --no-cache build-base
+COPY . /bip85
+WORKDIR /bip85
+RUN pip install --no-cache-dir .
+# Export built executable to a minimal runtime image and run as an unprivileged
+# user.
+FROM python:3.7.12-alpine3.14
+# Install binary
+COPY --from=build-stage /usr/local/lib/python3.7 /usr/local/lib/python3.7
+COPY --from=build-stage /usr/local/bin/bip85-cli /usr/local/bin/bip85-cli
+# Create an unprivileged user
+RUN addgroup -S group && adduser -S user -G group
+USER user
+ENTRYPOINT ["bip85-cli"]

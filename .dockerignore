@@ -1,7 +1,11 @@
 # Exclude docker related files so that the docker layer cache won't be
 # invalidated when editing them because the build context changes.
-Dockerfile
+*Dockerfile*
 .dockerignore
+# Exclude git metadata
+.git
+.gitattributes
+.gitignore
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
