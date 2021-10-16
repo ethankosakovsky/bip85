@@ -16,8 +16,15 @@ setuptools.setup(
     url="https://github.com/ethankosakovsky/bip85",
     packages=setuptools.find_packages(),
     keywords=['BIP85', 'entropy', 'bitcoin'],
-    install_requires=["mnemonic", "pycoin", "base58", "monero", "pycryptodome"],
-    tests_require=["pytest"],
+    install_requires=[
+        "mnemonic~=0.19",
+        "pycoin~=0.90",
+        "base58~=2.1",
+        "monero~=0.8",
+        "pycryptodome~=3.10",
+    ],
+    extras_require={"dev": ["pytest~=6.2", "pip-tools~=6.4"]},
+    tests_require=["pytest~=6.2"],
     python_requires=">=3.6",
     zip_safe=False,
     classifiers=[
@@ -26,7 +33,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Topic :: Security :: Cryptography",
     ],
-    entry_points = {
+    entry_points={
         "console_scripts": ["bip85-cli=bip85.cli:main"],
     },
 )
