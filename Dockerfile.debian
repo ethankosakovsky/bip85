@@ -7,14 +7,13 @@ RUN apt-get update -y \
   && rm -rf /var/lib/apt/lists/*
 COPY . /bip85
 WORKDIR /bip85
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir -r requirements.txt
 # Export built executable to a minimal runtime image and run as an unprivileged
 # user.
 FROM python:3.7.12-slim-buster
 # Install binary
 COPY --from=build-stage /usr/local/lib/python3.7 /usr/local/lib/python3.7
-COPY --from=build-stage /usr/local/bin/bip85-cli /usr/local/bin/bip85-cli
-# Create an unprivileged user
-RUN useradd --create-home --user-group user
-USER user
-ENTRYPOINT ["bip85-cli"]
+WORKDIR /bip85
+COPY --chown=1000:1000 . .
+ENV PYTHONPATH=.
+ENTRYPOINT ["python", "bip85/cli.py"]
