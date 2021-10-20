@@ -1,0 +1,16 @@
+FROM python:3.7.12-alpine3.14 AS build-stage
+# Install build dependencies
+RUN apk add --no-cache build-base=0.5-r2
+WORKDIR /app
+COPY ./requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+# Export built executable to a minimal runtime image and run as an unprivileged
+# user.
+FROM python:3.7.12-alpine3.14
+# Use an unprivileged user
+USER 1000:1000
+COPY --from=build-stage /usr/local/lib/python3.7 /usr/local/lib/python3.7
+WORKDIR /app
+COPY --chown=1000:1000 . .
+ENV PYTHONPATH=.
+ENTRYPOINT ["python", "bip85/cli.py"]

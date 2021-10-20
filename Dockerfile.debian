@@ -1,0 +1,20 @@
+FROM python:3.7.12-slim-bullseye AS build-stage
+ARG DEBIAN_FRONTEND=noninteractive
+# Install build dependencies
+RUN apt-get update -y \
+  && apt-get install --no-install-recommends -y build-essential=12.9 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY ./requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+# Export built executable to a minimal runtime image. Using distroless saves
+# about 50MB compared to python:3.7.12-slim-bullseye.
+FROM gcr.io/distroless/python3-debian10
+# Use an unprivileged user
+USER 1000:1000
+COPY --from=build-stage /usr/local/lib/python3.7 /usr/local/lib/python3.7
+WORKDIR /app
+COPY --chown=1000:1000 . .
+ENV PYTHONPATH=.:/usr/local/lib/python3.7/site-packages
+ENTRYPOINT ["python", "bip85/cli.py"]
