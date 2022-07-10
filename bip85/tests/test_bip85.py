@@ -100,6 +100,26 @@ def test_hex(path, width, expect):
     bip85 = BIP85()
     assert bip85.bip32_xprv_to_hex(path, width, XPRV) == expect
 
+@pytest.mark.parametrize('path, pwd_len, expect', [
+        ("83696968'/707764'/20'/0'", 20, "RrH7uVI0XlpddCbiuYV+"),
+        ("83696968'/707764'/21'/0'", 21, "dKLoepugzdVJvdL56ogNV"),
+        ("83696968'/707764'/24'/0'", 24, "vtV6sdNQTKpuefUMOHOKwUp1"),
+        ("83696968'/707764'/32'/1234'", 32, "mBhJgXCJd6IpdOu1cc/D1wU+5sxj/1tK"),
+        ("83696968'/707764'/64'/1234'", 64, "HBqosVLBhKneX8ZCZgLdvmA8biOdUV2S/AteE5Rs8sMT0pfG3aItk/IrHGEpY9um"),
+        ("83696968'/707764'/86'/1234'", 86, "7n3VQ63qjgY6OJBQxqWYToNRfzzN5J8DwN1D8JqlZfnsF+1LdPXG3gkOXighX4iKyKip8nRIhVVVObh/G41F7g"),
+    ])
+def test_pwd(path, pwd_len, expect):
+    bip85 = BIP85()
+    assert bip85.bip32_xprv_to_pwd(path, pwd_len, XPRV) == expect
+
+def test_pwd_out_of_range():
+    bip85 = BIP85()
+    with pytest.raises(ValueError):
+        bip85.bip32_xprv_to_pwd("83696968'/707764'/87'/0'", 87, XPRV)
+
+    with pytest.raises(ValueError):
+        bip85.bip32_xprv_to_pwd("83696968'/707764'/19'/0'", 19, XPRV)
+
 def test_bipentropy_applications():
     assert app.bip39(XPRV, 'english', 18, 0) == \
            'near account window bike charge season chef number sketch tomorrow excuse sniff circle vital hockey outdoor supply token'
