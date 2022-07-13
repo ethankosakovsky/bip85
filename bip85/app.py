@@ -53,10 +53,17 @@ def wif(xprv_string, index):
 
 
 def hex(xprv_string, index, width):
-    # m/83696968'/128169p'/index'
+    # m/83696968'/128169p'/width'/index'
     bip85 = BIP85()
     path = f"83696968p/128169p/{width}p/{index}p"
     return bip85.bip32_xprv_to_hex(path, width, xprv_string)
+
+
+def pwd(xprv_string, index, pwd_len):
+    # m/83696968'/707764'/pwd_len'/index'
+    bip85 = BIP85()
+    path = f"83696968p/707764p/{pwd_len}p/{index}p"
+    return bip85.bip32_xprv_to_pwd(path, pwd_len, xprv_string)
 
 
 def xprv(xprv_string, index):

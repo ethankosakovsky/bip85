@@ -25,6 +25,7 @@ from mnemonic import Mnemonic as bip39
 from pycoin.symbols.btc import network as BTC
 from pycoin.encoding.bytes32 import from_bytes_32, to_bytes_32
 import base58
+import base64
 
 
 class BIP85(object):
@@ -58,6 +59,15 @@ class BIP85(object):
         path = self._decorate_path(path)
         ent = self.bip32_xprv_to_entropy(path, xprv_string)
         return ent[0:width].hex()
+
+    def bip32_xprv_to_pwd(self, path, pwd_len, xprv_string):
+        # export entropy as hex
+        if not 20 <= pwd_len <= 86:
+            raise ValueError("'pwd_len' has to be in closed interval <20..86>")
+        path = self._decorate_path(path)
+        ent = self.bip32_xprv_to_entropy(path, xprv_string)
+        ent_b64 = base64.b64encode(ent).decode().strip()
+        return ent_b64[:pwd_len]
 
     def bip32_xprv_to_xprv(self, path, xprv_string):
         path = self._decorate_path(path)
